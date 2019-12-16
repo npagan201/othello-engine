@@ -1,6 +1,6 @@
 import OthelloInterface as interface
 import OthelloEngine as engine
-
+import time
 
 class Othello_AI(interface.Othello_AI):
     def __init__(self, team_type, board_size, time_limit):
@@ -162,13 +162,13 @@ def opposite_type(team_type):
 
 def alpha_beta_search(board_state, team_type, depth, alpha=float("-inf"), beta=float("inf"), max_player=True):
     move_list = engine.get_all_moves(board_state, team_type)
-    best_move = None
+    best_move = (team_type, None)
 
     if depth == 0:
-        return best_move, sum(row.count(team_type) for row in board_state)
+        return best_move, heuristics(board_state, team_type)
 
     if len(move_list) == 0:
-        return None, 0
+        return (team_type, None), 0
 
     if max_player:
         best_value = float("-inf")
@@ -221,7 +221,10 @@ def coin_parity(board_state, team_type):
                     maxP += 1
                 else:
                     minP += 1
-    value = 100 * ((maxP - minP) / (maxP + minP))
+    if maxP + minP != 0:
+        value = 100 * ((maxP - minP) / (maxP + minP))
+    else:
+        value = 0
     return value
 
 
@@ -235,14 +238,14 @@ def mobility(board_state, team_type):
     	'''
     if team_type == 'B':
         team = 'B'
-        maxM = engine.get_all_moves(board_state, team)
-        minM = engine.get_all_moves(board_state, 'W')
+        maxM = len(engine.get_all_moves(board_state, team))
+        minM = len(engine.get_all_moves(board_state, 'W'))
 
     else:
         team = 'W'
-        maxM = engine.get_all_moves(board_state, team)
-        minM = engine.get_all_moves(board_state, 'B')
-    if (maxM + minM != 0):
+        maxM = len(engine.get_all_moves(board_state, team))
+        minM = len(engine.get_all_moves(board_state, 'B'))
+    if maxM + minM != 0:
         mobile = 100 * ((maxM - minM) / (maxM + minM))
     else:
         mobile = 0
@@ -341,7 +344,7 @@ def stability(board_state, team_type):
         elif board_state[len(board_state) - 1][len(board_state) - 1] == 'W':
             minS += 1
 
-        for i in range(1, len(board_state[0] - 1)):  # top row
+        for i in range(1, len(board_state[0])- 1):  # top row
             if (board_state[0][i - 1]) and (board_state[0][i + 1]) != 'W':
                 maxS += 1
             else:
@@ -400,7 +403,7 @@ def stability(board_state, team_type):
         elif board_state[len(board_state) - 1][len(board_state) - 1] == 'B':
             minS += 1
 
-        for i in range(1, len(board_state[0] - 1)):  # top row
+        for i in range(1, len(board_state[0]) - 1):  # top row
             if (board_state[0][i - 1]) and (board_state[0][i + 1]) != 'B':
                 maxS += 1
             else:
@@ -451,4 +454,5 @@ def heuristics(board_state, team_type):
     value += mobility(board_state, team_type)
     value += corners(board_state, team_type)
     value += stability(board_state, team_type)
+
     return value

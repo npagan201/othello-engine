@@ -112,7 +112,8 @@ class GameEngine:
       # if their turn exceeds the time limit
       # or their move is not valid
       # or their class raises an exception
-      except:
+      except Exception as e:
+         print(e)
          return 'B' if team.team_type == 'W' else 'W'
 
    # Check valid move method
@@ -278,8 +279,8 @@ class GameEngine:
          #set the spot in the game_state
          self.game_state[r][c] = color
 
-         # Add the current board state to list of all board states for visualizer purposes
-         self.all_board_states.append(np.array(self.game_state).flatten())
+      # Add the current board state to list of all board states for visualizer purposes
+      self.all_board_states.append(np.array(self.game_state).flatten())
 
 
    # Check for end condition
@@ -309,7 +310,7 @@ class GameEngine:
       # Recall that all_moves will contain a list of every move in the game
 
       turns = []
-      for i in range(len(self.all_moves)):
+      for i in range(len(self.all_moves)-1):
          player = self.all_moves[i][0]
          turn_index = i // 2 if player == 'B' else (i - 1) // 2
          turn = {"turn": i, "player": player, "time": self.turn_times[player][turn_index],
