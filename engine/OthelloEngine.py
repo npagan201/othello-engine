@@ -310,7 +310,7 @@ class GameEngine:
       # Recall that all_moves will contain a list of every move in the game
 
       turns = []
-      for i in range(len(self.all_moves)-1):
+      for i in range(len(self.all_moves)):
          player = self.all_moves[i][0]
          turn_index = i // 2 if player == 'B' else (i - 1) // 2
          turn = {"turn": i, "player": player, "time": self.turn_times[player][turn_index],

@@ -7,7 +7,7 @@ class Othello_AI(interface.Othello_AI):
         interface.Othello_AI.__init__(self, team_type, board_size, time_limit)
 
     def get_move(self, board_state):
-        return alpha_beta_search(board_state, self.team_type, 15)[0]
+        return alpha_beta_search(board_state, self.team_type, 30)[0]
 
     def get_team_name(self):
         return 'Tight-Fisted Frogs'
@@ -451,8 +451,8 @@ def stability(board_state, team_type):
 def heuristics(board_state, team_type):
     value = 0
     value += coin_parity(board_state, team_type)
-    value += mobility(board_state, team_type)
-    value += corners(board_state, team_type)
-    value += stability(board_state, team_type)
+    value += 2*mobility(board_state, team_type)
+    value += 4*corners(board_state, team_type)
+    value += 3*stability(board_state, team_type)
 
     return value
