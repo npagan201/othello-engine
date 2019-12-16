@@ -10,7 +10,7 @@ class Othello_AI(interface.Othello_AI):
         return alpha_beta_search(board_state, self.team_type, 15)[0]
 
     def get_team_name(self):
-        return 'Some-Team-Name'
+        return 'Tight-Fisted Frogs'
 
 
 # Perform move
