@@ -2,6 +2,7 @@ import time
 import json
 import sys
 import copy
+import numpy as np
 
 class GameEngine:
    # white_team_file will be the file name of the white team's AI file
@@ -26,6 +27,7 @@ class GameEngine:
       # turn_times keys each team's color character ('W' or 'B') to a list of their turn times
       # total time is the current sum of all of the player's turns
       self.all_moves = []
+      self.all_board_states = []
       self.turn_number = 0
       self.turn_times = {'W': [], 'B': []}
       self.total_time = 0
@@ -276,6 +278,9 @@ class GameEngine:
          #set the spot in the game_state
          self.game_state[r][c] = color
 
+         # Add the current board state to list of all board states for visualizer purposes
+         self.all_board_states.append(np.array(self.game_state).flatten())
+
 
    # Check for end condition
    def check_end(self):
@@ -308,7 +313,7 @@ class GameEngine:
          player = self.all_moves[i][0]
          turn_index = i // 2 if player == 'B' else (i - 1) // 2
          turn = {"turn": i, "player": player, "time": self.turn_times[player][turn_index],
-                 "move": self.all_moves[i][1]}
+                 "move": self.all_moves[i][1], "board": self.all_board_states[i]}
          turns.append(turn)
 
       white_count = sum(row.count('W') for row in self.game_state)
