@@ -302,9 +302,9 @@ def corners(board_state, team_type):
             minC += 1
 
     if maxC + minC != 0:
-		value = 100 * (maxC - minC) / (maxC + minC)
+	value = 100 * (maxC - minC) / (maxC + minC)
     else:
-		value = 0
+	value = 0
     return value
 
 
