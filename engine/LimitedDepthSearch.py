@@ -301,6 +301,10 @@ def corners(board_state, team_type):
         elif board_state[len(board_state) - 1][len(board_state) - 1] == 'B':
             minC += 1
 
+    if maxC + minC != 0:
+		value = 100 * (maxC - minC) / (maxC + minC)
+	else:
+		value = 0
     return value
 
 
