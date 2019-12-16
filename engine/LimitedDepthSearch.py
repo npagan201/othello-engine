@@ -1,8 +1,8 @@
-import engine.OthelloInterface as interface
-import engine.OthelloEngine as engine
+import OthelloInterface as interface
+import OthelloEngine as engine
 
 
-class LimitedDepthSearch(interface.Othello_AI):
+class Othello_AI(interface.Othello_AI):
     def __init__(self, team_type, board_size, time_limit):
         interface.Othello_AI.__init__(self, team_type, board_size, time_limit)
 
@@ -200,230 +200,251 @@ def alpha_beta_search(board_state, team_type, depth, alpha=float("-inf"), beta=f
                 break
         return best_move, best_value
 
-def heuristics(board_state, team_type):
-	'''
-	Coin Parity Heuristic Value =
-		100 * (Max Player Coins - Min Player Coins ) / (Max Player Coins + Min Player Coins)
-	'''
-	value = 0
-	maxP = 0
-	minP = 0
-	for i in range(len(board_state)):
-		for j in range(len(board_state[i])):
-			if j == 'B':
-				if team_type == 'B':
-					maxP += 1
-				else:
-					minP += 1
-			elif j == 'W':
-				if team_type == 'W':
-					maxP += 1
-				else:
-					minP += 1
-	value = 100* ((maxP - minP) / (maxP + minP))
-	
-	'''
-	if ( Max Player Moves + Min Player Moves != 0)
-		Mobility Heuristic Value =
-			100 * (Max Player Moves - Min Player Moves) / (Max Player Moves + Min Player Moves)
-	else
-		Mobility Heuristic Value = 0
-	'''
-	if team_type == 'B':
-		team = 'B'
-		maxM = get_all_moves(board_state, team)
-		minM = get_all_moves(board_state, 'W')
-		
-	else:
-		team = 'W'
-		maxM = get_all_moves(board_state, team)
-		minM = get_all_moves(board_state, 'B')
-	if (maxM + minM != 0):
-		mobile = 100 * ((maxM - minM) / (maxM + minM))
-	else:
-		mobile = 0
-	
-	'''
-	if ( Max Player Corners + Min Player Corners != 0)
-		Corner Heuristic Value =
-			100 * (Max Player Corners - Min Player Corners) / (Max Player Corners + Min Player Corners)
-	else
-		Corner Heuristic Value = 0
-	'''
-	maxC = 0
-	minC = 0
-	if team_type == 'B':
-		if board_state[0][0] == 'B':
-			maxC += 1
-		elif board_state[0][0] == 'W':
-			minC += 1
-			
-		if board_state[0][len(board_state) - 1] == 'B':
-			maxC += 1
-		elif board_state[0][len(board_state) - 1] == 'W':
-			minC += 1
-			
-		if board_state[len(board_state) - 1][0] == 'B':
-			maxC += 1
-		elif board_state[len(board_state) - 1][0] == 'W':
-			minC += 1
-			
-		if board_state[len(board_state) - 1][len(board_state) - 1] == 'B':
-			maxC += 1
-		elif board_state[len(board_state) - 1][len(board_state) - 1] == 'W':
-			minC += 1
-	else:
-		if board_state[0][0] == 'W':
-			maxC += 1
-		elif board_state[0][0] == 'B':
-			minC += 1
-			
-		if board_state[0][len(board_state) - 1] == 'W':
-			maxC += 1
-		elif board_state[0][len(board_state) - 1] == 'B':
-			minC += 1
-			
-		if board_state[len(board_state) - 1][0] == 'W':
-			maxC += 1
-		elif board_state[len(board_state) - 1][0] == 'B':
-			minC += 1
-			
-		if board_state[len(board_state) - 1][len(board_state) - 1] == 'W':
-			maxC += 1
-		elif board_state[len(board_state) - 1][len(board_state) - 1] == 'B':
-			minC += 1
-			
-	'''
-	if ( Max Player Stability Value + Min Player Stability Value != 0)
-		Stability  Heuristic Value =
-			100 * (Max Player Stability Value - Min Player Stability Value) / (Max Player Stability Value + Min Player Stability Value)
-	else
-		Stability Heuristic Value = 0
 
-	'''
-	value = 0
-	maxS = 0
-	minS = 0
-	if team_type == 'B':
-		if board_state[0][0] == 'B':
-			maxS += 1
-		elif board_state[0][0] == 'W':
-			minS += 1
-			
-		if board_state[0][len(board_state) - 1] == 'B':
-			maxS += 1
-		elif board_state[0][len(board_state) - 1] == 'W':
-			minS += 1
-			
-		if board_state[len(board_state) - 1][0] == 'B':
-			maxS += 1
-		elif board_state[len(board_state) - 1][0] == 'W':
-			minS += 1
-			
-		if board_state[len(board_state) - 1][len(board_state) - 1] == 'B':
-			maxS += 1
-		elif board_state[len(board_state) - 1][len(board_state) - 1] == 'W':
-			minS += 1
-		
-		for i in range(1, len(board_state[0] -1)): #top row
-			if (board_state[0][i-1]) and (board_state[0][i+1]) != 'W':
-				maxS += 1
-			else:
-				minS += 1
-			
-		for i in range(1, len(board_state[0]) -1): #bottom row
-			if (board_state[len(board_state) -1][i-1]) and (board_state[len(board_state) -1][i+1]) != 'W':
-				maxS += 1
-			else:
-				minS += 1
-			
-		for i in range(1, len(board_state[0]) -1): #left col
-			if (board_state[i-1][0]) and (board_state[i+1][0]) != 'W':
-				maxS += 1
-			else:
-				minS += 1
-				
-		for i in range(1, len(board_state[0]) -1): #right col
-			if (board_state[i-1][len(board_state) -1]) and (board_state[i+1][len(board_state) -1]) != 'W':
-				maxS += 1
-			else:
-				minS += 1
-				
-		for i in range(len(board_state) -2):
-			for j in range(len(board_state[i]) -2):
-				if (board_state[i-1][j-1] != 'W')
-				and (board_state[i][j-1] != 'W')
-				and (board_state[i-1][j] != 'W')
-				and (board_state[i+1][j+1] != 'W')
-				and(board_state[i+1][j] != 'W')
-				and (board_state[i][j+1] != 'W')
-				and (board_state[i+1][j-1] != 'W')
-				and (board_state[i-1][j+1] != 'W'):
-					maxS += 1
-				else:
-					maxS -= 1
-					
-	else:
-		if board_state[0][0] == 'W':
-			maxS += 1
-		elif board_state[0][0] == 'B':
-			minS += 1
-			
-		if board_state[0][len(board_state) - 1] == 'W':
-			maxS += 1
-		elif board_state[0][len(board_state) - 1] == 'B':
-			minS += 1
-			
-		if board_state[len(board_state) - 1][0] == 'W':
-			maxS += 1
-		elif board_state[len(board_state) - 1][0] == 'B':
-			minS += 1
-			
-		if board_state[len(board_state) - 1][len(board_state) - 1] == 'W':
-			maxS += 1
-		elif board_state[len(board_state) - 1][len(board_state) - 1] == 'B':
-			minS += 1
-		
-		for i in range(1, len(board_state[0] -1)): #top row
-			if (board_state[0][i-1]) and (board_state[0][i+1]) != 'B':
-				maxS += 1
-			else:
-				minS += 1
-			
-		for i in range(1, len(board_state[0]) -1): #bottom row
-			if (board_state[len(board_state) -1][i-1]) and (board_state[len(board_state) -1][i+1]) != 'B':
-				maxS += 1
-			else:
-				minS += 1
-			
-		for i in range(1, len(board_state[0]) -1): #left col
-			if (board_state[i-1][0]) and (board_state[i+1][0]) != 'B':
-				maxS += 1
-			else:
-				minS += 1
-				
-		for i in range(1, len(board_state[0]) -1): #right col
-			if (board_state[i-1][len(board_state) -1]) and (board_state[i+1][len(board_state) -1]) != 'B':
-				maxS += 1
-			else:
-				minS += 1
-				
-		for i in range(len(board_state) -2):
-			for j in range(len(board_state[i]) -2):
-				if (board_state[i-1][j-1] != 'B')
-				and (board_state[i][j-1] != 'B')
-				and (board_state[i-1][j] != 'B')
-				and (board_state[i+1][j+1] != 'B')
-				and(board_state[i+1][j] != 'B')
-				and (board_state[i][j+1] != 'B')
-				and (board_state[i+1][j-1] != 'B')
-				and (board_state[i-1][j+1] != 'B'):
-					maxS += 1
-				else:
-					maxS -= 1
-					
-					
-	if (maxS + minS != 0)
-		value = 100 * (maxS - minS) / (maxS + minS)
-	else
-		value = 0
+def coin_parity(board_state, team_type):
+    '''
+    Coin Parity Heuristic Value =
+    	100 * (Max Player Coins - Min Player Coins ) / (Max Player Coins + Min Player Coins)
+    '''
+    value = 0
+    maxP = 0
+    minP = 0
+    for i in range(len(board_state)):
+        for j in range(len(board_state[i])):
+            if j == 'B':
+                if team_type == 'B':
+                    maxP += 1
+                else:
+                    minP += 1
+            elif j == 'W':
+                if team_type == 'W':
+                    maxP += 1
+                else:
+                    minP += 1
+    value = 100 * ((maxP - minP) / (maxP + minP))
+    return value
+
+
+def mobility(board_state, team_type):
+    '''
+    	if ( Max Player Moves + Min Player Moves != 0)
+    		Mobility Heuristic Value =
+    			100 * (Max Player Moves - Min Player Moves) / (Max Player Moves + Min Player Moves)
+    	else
+    		Mobility Heuristic Value = 0
+    	'''
+    if team_type == 'B':
+        team = 'B'
+        maxM = engine.get_all_moves(board_state, team)
+        minM = engine.get_all_moves(board_state, 'W')
+
+    else:
+        team = 'W'
+        maxM = engine.get_all_moves(board_state, team)
+        minM = engine.get_all_moves(board_state, 'B')
+    if (maxM + minM != 0):
+        mobile = 100 * ((maxM - minM) / (maxM + minM))
+    else:
+        mobile = 0
+    return mobile
+
+
+def corners(board_state, team_type):
+    '''
+    	if ( Max Player Corners + Min Player Corners != 0)
+    		Corner Heuristic Value =
+    			100 * (Max Player Corners - Min Player Corners) / (Max Player Corners + Min Player Corners)
+    	else
+    		Corner Heuristic Value = 0
+    	'''
+    value = 0
+    maxC = 0
+    minC = 0
+    if team_type == 'B':
+        if board_state[0][0] == 'B':
+            maxC += 1
+        elif board_state[0][0] == 'W':
+            minC += 1
+
+        if board_state[0][len(board_state) - 1] == 'B':
+            maxC += 1
+        elif board_state[0][len(board_state) - 1] == 'W':
+            minC += 1
+
+        if board_state[len(board_state) - 1][0] == 'B':
+            maxC += 1
+        elif board_state[len(board_state) - 1][0] == 'W':
+            minC += 1
+
+        if board_state[len(board_state) - 1][len(board_state) - 1] == 'B':
+            maxC += 1
+        elif board_state[len(board_state) - 1][len(board_state) - 1] == 'W':
+            minC += 1
+    else:
+        if board_state[0][0] == 'W':
+            maxC += 1
+        elif board_state[0][0] == 'B':
+            minC += 1
+
+        if board_state[0][len(board_state) - 1] == 'W':
+            maxC += 1
+        elif board_state[0][len(board_state) - 1] == 'B':
+            minC += 1
+
+        if board_state[len(board_state) - 1][0] == 'W':
+            maxC += 1
+        elif board_state[len(board_state) - 1][0] == 'B':
+            minC += 1
+
+        if board_state[len(board_state) - 1][len(board_state) - 1] == 'W':
+            maxC += 1
+        elif board_state[len(board_state) - 1][len(board_state) - 1] == 'B':
+            minC += 1
+
+    return value
+
+
+def stability(board_state, team_type):
+    '''
+    if ( Max Player Stability Value + Min Player Stability Value != 0)
+        Stability  Heuristic Value =
+            100 * (Max Player Stability Value - Min Player Stability Value) / (Max Player Stability Value + Min Player Stability Value)
+    else
+        Stability Heuristic Value = 0
+
+    '''
+    value = 0
+    maxS = 0
+    minS = 0
+    if team_type == 'B':
+        if board_state[0][0] == 'B':
+            maxS += 1
+        elif board_state[0][0] == 'W':
+            minS += 1
+
+        if board_state[0][len(board_state) - 1] == 'B':
+            maxS += 1
+        elif board_state[0][len(board_state) - 1] == 'W':
+            minS += 1
+
+        if board_state[len(board_state) - 1][0] == 'B':
+            maxS += 1
+        elif board_state[len(board_state) - 1][0] == 'W':
+            minS += 1
+
+        if board_state[len(board_state) - 1][len(board_state) - 1] == 'B':
+            maxS += 1
+        elif board_state[len(board_state) - 1][len(board_state) - 1] == 'W':
+            minS += 1
+
+        for i in range(1, len(board_state[0] - 1)):  # top row
+            if (board_state[0][i - 1]) and (board_state[0][i + 1]) != 'W':
+                maxS += 1
+            else:
+                minS += 1
+
+        for i in range(1, len(board_state[0]) - 1):  # bottom row
+            if (board_state[len(board_state) - 1][i - 1]) and (board_state[len(board_state) - 1][i + 1]) != 'W':
+                maxS += 1
+            else:
+                minS += 1
+
+        for i in range(1, len(board_state[0]) - 1):  # left col
+            if (board_state[i - 1][0]) and (board_state[i + 1][0]) != 'W':
+                maxS += 1
+            else:
+                minS += 1
+
+        for i in range(1, len(board_state[0]) - 1):  # right col
+            if (board_state[i - 1][len(board_state) - 1]) and (board_state[i + 1][len(board_state) - 1]) != 'W':
+                maxS += 1
+            else:
+                minS += 1
+
+        for i in range(len(board_state) - 2):
+            for j in range(len(board_state[i]) - 2):
+                if (board_state[i - 1][j - 1] != 'W') \
+                        and (board_state[i][j - 1] != 'W') \
+                        and (board_state[i - 1][j] != 'W') \
+                        and (board_state[i + 1][j + 1] != 'W') \
+                        and (board_state[i + 1][j] != 'W') \
+                        and (board_state[i][j + 1] != 'W') \
+                        and (board_state[i + 1][j - 1] != 'W') \
+                        and (board_state[i - 1][j + 1] != 'W'):
+                    maxS += 1
+                else:
+                    maxS -= 1
+
+    else:
+        if board_state[0][0] == 'W':
+            maxS += 1
+        elif board_state[0][0] == 'B':
+            minS += 1
+
+        if board_state[0][len(board_state) - 1] == 'W':
+            maxS += 1
+        elif board_state[0][len(board_state) - 1] == 'B':
+            minS += 1
+
+        if board_state[len(board_state) - 1][0] == 'W':
+            maxS += 1
+        elif board_state[len(board_state) - 1][0] == 'B':
+            minS += 1
+
+        if board_state[len(board_state) - 1][len(board_state) - 1] == 'W':
+            maxS += 1
+        elif board_state[len(board_state) - 1][len(board_state) - 1] == 'B':
+            minS += 1
+
+        for i in range(1, len(board_state[0] - 1)):  # top row
+            if (board_state[0][i - 1]) and (board_state[0][i + 1]) != 'B':
+                maxS += 1
+            else:
+                minS += 1
+
+        for i in range(1, len(board_state[0]) - 1):  # bottom row
+            if (board_state[len(board_state) - 1][i - 1]) and (board_state[len(board_state) - 1][i + 1]) != 'B':
+                maxS += 1
+            else:
+                minS += 1
+
+        for i in range(1, len(board_state[0]) - 1):  # left col
+            if (board_state[i - 1][0]) and (board_state[i + 1][0]) != 'B':
+                maxS += 1
+            else:
+                minS += 1
+
+        for i in range(1, len(board_state[0]) - 1):  # right col
+            if (board_state[i - 1][len(board_state) - 1]) and (board_state[i + 1][len(board_state) - 1]) != 'B':
+                maxS += 1
+            else:
+                minS += 1
+
+    for i in range(len(board_state) - 2):
+        for j in range(len(board_state[i]) - 2):
+            if (board_state[i - 1][j - 1] != 'B') \
+                    and (board_state[i][j - 1] != 'B') \
+                    and (board_state[i - 1][j] != 'B') \
+                    and (board_state[i + 1][j + 1] != 'B') \
+                    and (board_state[i + 1][j] != 'B') \
+                    and (board_state[i][j + 1] != 'B') \
+                    and (board_state[i + 1][j - 1] != 'B') \
+                    and (board_state[i - 1][j + 1] != 'B'):
+                maxS += 1
+            else:
+                maxS -= 1
+
+    if maxS + minS != 0:
+        value = 100 * (maxS - minS) / (maxS + minS)
+    else:
+        value = 0
+    return value
+
+
+def heuristics(board_state, team_type):
+    value = 0
+    value += coin_parity(board_state, team_type)
+    value += mobility(board_state, team_type)
+    value += corners(board_state, team_type)
+    value += stability(board_state, team_type)
+    return value

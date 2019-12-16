@@ -1,4 +1,4 @@
-from .OthelloEngine import get_all_moves
+from OthelloEngine import get_all_moves
 import random
 
 
