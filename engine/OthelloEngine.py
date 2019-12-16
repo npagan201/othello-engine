@@ -313,7 +313,7 @@ class GameEngine:
          player = self.all_moves[i][0]
          turn_index = i // 2 if player == 'B' else (i - 1) // 2
          turn = {"turn": i, "player": player, "time": self.turn_times[player][turn_index],
-                 "move": self.all_moves[i][1], "board": self.all_board_states[i]}
+                 "move": self.all_moves[i][1], "board": self.all_board_states[i].tolist()}
          turns.append(turn)
 
       white_count = sum(row.count('W') for row in self.game_state)

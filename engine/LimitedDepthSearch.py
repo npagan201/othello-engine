@@ -7,7 +7,7 @@ class Othello_AI(interface.Othello_AI):
         interface.Othello_AI.__init__(self, team_type, board_size, time_limit)
 
     def get_move(self, board_state):
-        return alpha_beta_search(board_state, self.team_type, 7)[0]
+        return alpha_beta_search(board_state, self.team_type, 15)[0]
 
     def get_team_name(self):
         return 'Some-Team-Name'
@@ -302,9 +302,9 @@ def corners(board_state, team_type):
             minC += 1
 
     if maxC + minC != 0:
-	value = 100 * (maxC - minC) / (maxC + minC)
+        value = 100 * (maxC - minC) / (maxC + minC)
     else:
-	value = 0
+        value = 0
     return value
 
 
